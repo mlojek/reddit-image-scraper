@@ -16,8 +16,9 @@ def lines_from_file(filepath: str) -> list:
 
 
 if __name__ == '__main__':
-    # Get client params:
     client = lines_from_file('client')
+    users = lines_from_file('users')
+    subreddits = lines_from_file('subreddits')
 
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0], client_secret=client[1], user_agent=client[2])
