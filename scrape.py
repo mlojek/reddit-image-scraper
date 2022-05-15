@@ -3,7 +3,7 @@ import requests
 import os
 
 
-POST_LIMIT = 1000
+POST_LIMIT = 100
 
 
 def lines_from_file(filepath: str) -> list:
@@ -18,6 +18,10 @@ def lines_from_file(filepath: str) -> list:
             result.append(line)
 
     return result
+
+
+def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort):
+    pass
 
 
 if __name__ == '__main__':
