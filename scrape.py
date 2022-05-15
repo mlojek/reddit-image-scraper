@@ -25,7 +25,7 @@ if __name__ == '__main__':
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0], client_secret=client[1], user_agent=client[2])
 
-    # Sav top hottest posts' images from every subreddit:
+    # # Sav top hottest posts' images from every subreddit:
     for sub in subreddits:
         # Make a subdirectory for the images:
         if not sub in os.listdir('images'):
@@ -39,6 +39,27 @@ if __name__ == '__main__':
             extension = submission.url.rsplit('.')[-1]
             try:
                 path = f"images/{sub}/{submission.id}.{extension}"
+                print(path)
+                with open(path, "wb") as file:
+                    file.write(response.content)
+            except:
+                pass
+
+
+
+    for user in users:
+        # Make a subdirectory for the images:
+        if not user in os.listdir('images'):
+            os.mkdir(f'images/{user}')
+
+        for submission in reddit.redditor(user).submissions.hot(limit=1000):
+            print(submission.url)
+            
+            response = requests.get(submission.url)
+
+            extension = submission.url.rsplit('.')[-1]
+            try:
+                path = f"images/{user}/{submission.id}.{extension}"
                 print(path)
                 with open(path, "wb") as file:
                     file.write(response.content)
