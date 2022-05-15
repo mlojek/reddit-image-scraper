@@ -3,6 +3,9 @@ import requests
 import os
 
 
+POST_LIMIT = 1000
+
+
 def lines_from_file(filepath: str) -> list:
     result = []
 
@@ -31,16 +34,20 @@ if __name__ == '__main__':
         if not sub in os.listdir('images'):
             os.mkdir(f'images/{sub}')
 
-        for submission in reddit.subreddit(sub).hot(limit=1000):
+        # Get the submissions (posts) and save images:
+        for submission in reddit.subreddit(sub).hot(limit=POST_LIMIT):
             print(submission.url)
+            print(submission.author.name)
             
             response = requests.get(submission.url)
 
-            extension = submission.url.rsplit('.')[-1]
             try:
-                path = f"images/{sub}/{submission.id}.{extension}"
-                print(path)
-                with open(path, "wb") as file:
+                extension = submission.url.rsplit('.')[-1]
+                file_path = f'images/{sub}/'
+                file_name = f'{submission.id}_{submission.author.name}.{extension}'
+
+                # Save to file:
+                with open(file_path + file_name, "wb") as file:
                     file.write(response.content)
             except:
                 pass
