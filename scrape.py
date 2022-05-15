@@ -28,10 +28,8 @@ if __name__ == '__main__':
     # Sav top hottest posts' images from every subreddit:
     for sub in subreddits:
         # Make a subdirectory for the images:
-        try:
-            os.mkdir(f"images/{sub}")
-        except:
-            pass
+        if not sub in os.listdir('images'):
+            os.mkdir(f'images/{sub}')
 
         for submission in reddit.subreddit(sub).hot(limit=1000):
             print(submission.url)
