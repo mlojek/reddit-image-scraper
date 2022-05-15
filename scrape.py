@@ -25,11 +25,15 @@ if __name__ == '__main__':
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0], client_secret=client[1], user_agent=client[2])
 
-    # Print top hottest posts' title from every subreddit:
+    # Sav top hottest posts' images from every subreddit:
     for sub in subreddits:
-        os.mkdir(f"images/{sub}")
+        # Make a subdirectory for the images:
+        try:
+            os.mkdir(f"images/{sub}")
+        except:
+            pass
 
-        for submission in reddit.subreddit(sub).hot(limit=10):
+        for submission in reddit.subreddit(sub).hot(limit=1000):
             print(submission.url)
             
             response = requests.get(submission.url)
