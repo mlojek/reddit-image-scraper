@@ -1,4 +1,5 @@
 import praw
+import requests
 
 
 def lines_from_file(filepath: str) -> list:
@@ -23,7 +24,18 @@ if __name__ == '__main__':
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0], client_secret=client[1], user_agent=client[2])
 
-    # Check if it works by scraping top 10 hottest posts' titles:
-    hot_posts = reddit.subreddit('MachineLearning').hot(limit=10)
-    for post in hot_posts:
-        print(post.title)
+    # Print top hottest posts' title from every subreddit:
+    # for sub in subreddits:
+    #     hottest_posts = reddit.subreddit(sub).hot(limit=1)
+    #     for post in hottest_posts:
+    #         print(sub)
+    #         print(post.title)
+
+    for submission in reddit.subreddit("polska_wpz").hot(limit=1):
+        print(submission.url)
+        
+        response = requests.get(submission.url)
+
+        extension = submission.url.rsplit('.')[-1]
+        with open(f"{submission.id}.{extension}", "wb") as file:
+            file.write(response.content)
