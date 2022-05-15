@@ -14,9 +14,9 @@ def lines_from_file(filepath: str) -> list:
             # Get rid of newlines:
             if line[-1] == '\n':
                 line = line[0:-1]
-            
+
             result.append(line)
-    
+
     return result
 
 
@@ -26,20 +26,18 @@ if __name__ == '__main__':
     subreddits = lines_from_file('subreddits')
 
     # Create a new Reddit instance:
-    reddit = praw.Reddit(client_id=client[0], client_secret=client[1], user_agent=client[2])
+    reddit = praw.Reddit(client_id=client[0],
+                         client_secret=client[1],
+                         user_agent=client[2])
 
-    # # Sav top hottest posts' images from every subreddit:
     for sub in subreddits:
         # Make a subdirectory for the images:
-        if not sub in os.listdir('images'):
+        if sub not in os.listdir('images'):
             os.mkdir(f'images/{sub}')
 
         # Get the submissions (posts) and save images:
         for submission in reddit.subreddit(sub).hot(limit=POST_LIMIT):
             print(submission.url)
-            print(submission.author.name)
-            
-            response = requests.get(submission.url)
 
             try:
                 extension = submission.url.rsplit('.')[-1]
@@ -47,28 +45,28 @@ if __name__ == '__main__':
                 file_name = f'{submission.id}_{submission.author.name}.{extension}'
 
                 # Save to file:
+                response = requests.get(submission.url)
                 with open(file_path + file_name, "wb") as file:
                     file.write(response.content)
-            except:
+            except FileNotFoundError:
                 pass
-
-
 
     for user in users:
         # Make a subdirectory for the images:
-        if not user in os.listdir('images'):
+        if user not in os.listdir('images'):
             os.mkdir(f'images/{user}')
 
         for submission in reddit.redditor(user).submissions.hot(limit=1000):
             print(submission.url)
-            
-            response = requests.get(submission.url)
 
-            extension = submission.url.rsplit('.')[-1]
             try:
-                path = f"images/{user}/{submission.id}.{extension}"
-                print(path)
-                with open(path, "wb") as file:
+                extension = submission.url.rsplit('.')[-1]
+                file_path = f'images/{user}/'
+                file_name = f'{submission.id}_{user}.{extension}'
+
+                # Save to file:
+                response = requests.get(submission.url)
+                with open(file_path + file_name, "wb") as file:
                     file.write(response.content)
-            except:
+            except FileNotFoundError:
                 pass
