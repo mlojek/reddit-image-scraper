@@ -4,6 +4,7 @@ import os
 
 
 POST_LIMIT = 100
+EXTENSIONS = ['png', 'jpg', 'gif', 'jpeg', 'mp4']
 
 
 def lines_from_file(filepath: str) -> list:
@@ -20,8 +21,26 @@ def lines_from_file(filepath: str) -> list:
     return result
 
 
-def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort):
-    pass
+def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort=1) -> None:
+    # Make a subdirectory for the images:
+    if sub_name not in os.listdir('images'):
+        os.mkdir(f'images/{sub_name}')
+
+    # Get the submissions (posts) and save images:
+    for submission in reddit.subreddit(sub_name).hot(limit=post_limit):
+        print(submission.url)
+
+        try:
+            extension = submission.url.rsplit('.')[-1]
+            file_path = f'images/{sub_name}/'
+            file_name = f'{submission.id}_{submission.author.name}.{extension}'
+
+            # Save to file:
+            response = requests.get(submission.url)
+            with open(file_path + file_name, "wb") as file:
+                file.write(response.content)
+        except FileNotFoundError:
+            pass
 
 
 if __name__ == '__main__':
@@ -34,43 +53,45 @@ if __name__ == '__main__':
                          client_secret=client[1],
                          user_agent=client[2])
 
-    for sub in subreddits:
-        # Make a subdirectory for the images:
-        if sub not in os.listdir('images'):
-            os.mkdir(f'images/{sub}')
+    scrape_subreddit_images(reddit, 'memes', 100)
 
-        # Get the submissions (posts) and save images:
-        for submission in reddit.subreddit(sub).hot(limit=POST_LIMIT):
-            print(submission.url)
+    # for sub in subreddits:
+    #     # Make a subdirectory for the images:
+    #     if sub not in os.listdir('images'):
+    #         os.mkdir(f'images/{sub}')
 
-            try:
-                extension = submission.url.rsplit('.')[-1]
-                file_path = f'images/{sub}/'
-                file_name = f'{submission.id}_{submission.author.name}.{extension}'
+    #     # Get the submissions (posts) and save images:
+    #     for submission in reddit.subreddit(sub).hot(limit=POST_LIMIT):
+    #         print(submission.url)
 
-                # Save to file:
-                response = requests.get(submission.url)
-                with open(file_path + file_name, "wb") as file:
-                    file.write(response.content)
-            except FileNotFoundError:
-                pass
+    #         try:
+    #             extension = submission.url.rsplit('.')[-1]
+    #             file_path = f'images/{sub}/'
+    #             file_name = f'{submission.id}_{submission.author.name}.{extension}'
 
-    for user in users:
-        # Make a subdirectory for the images:
-        if user not in os.listdir('images'):
-            os.mkdir(f'images/{user}')
+    #             # Save to file:
+    #             response = requests.get(submission.url)
+    #             with open(file_path + file_name, "wb") as file:
+    #                 file.write(response.content)
+    #         except FileNotFoundError:
+    #             pass
 
-        for submission in reddit.redditor(user).submissions.hot(limit=1000):
-            print(submission.url)
+    # for user in users:
+    #     # Make a subdirectory for the images:
+    #     if user not in os.listdir('images'):
+    #         os.mkdir(f'images/{user}')
 
-            try:
-                extension = submission.url.rsplit('.')[-1]
-                file_path = f'images/{user}/'
-                file_name = f'{submission.id}_{user}.{extension}'
+    #     for submission in reddit.redditor(user).submissions.hot(limit=1000):
+    #         print(submission.url)
 
-                # Save to file:
-                response = requests.get(submission.url)
-                with open(file_path + file_name, "wb") as file:
-                    file.write(response.content)
-            except FileNotFoundError:
-                pass
+    #         try:
+    #             extension = submission.url.rsplit('.')[-1]
+    #             file_path = f'images/{user}/'
+    #             file_name = f'{submission.id}_{user}.{extension}'
+
+    #             # Save to file:
+    #             response = requests.get(submission.url)
+    #             with open(file_path + file_name, "wb") as file:
+    #                 file.write(response.content)
+    #         except FileNotFoundError:
+    #             pass
