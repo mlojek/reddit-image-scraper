@@ -119,6 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('-R', type=str, help='file containing names of subreddits to scrape')
     parser.add_argument('-u', type=str, help='user to scrape')
     parser.add_argument('-U', type=str, help='file containing names of users to scrape')
+    parser.add_argument('-s', type=str, help='sorting criterium: hot/top/new/random')
     parser.add_argument('postlimit', type=int, help='how many posts to process')
     args = parser.parse_args()
 
@@ -143,9 +144,12 @@ if __name__ == '__main__':
                          user_agent=client[2])
 
     # for sub in subreddits:
-    #     scrape_subreddit_images(reddit, sub, 10)
+    
+    sort = Sort.hot
+    
 
-    # scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.random)
+
+
     if args.r:
         scrape_subreddit_images(reddit, args.r, args.postlimit)
     
