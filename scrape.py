@@ -1,6 +1,7 @@
+import os
 import praw
 import requests
-import os
+import argparse
 from enum import IntEnum
 
 
@@ -112,9 +113,25 @@ def scrape_user_images(reddit, user_name: str, post_limit: int, sort: int = Sort
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Reddit image downloader")
+    parser.add_argument('-r', type=str, help='scrape images from a given subreddit')
+    parser.add_argument('postlimit', type=int, help='how many posts to process')
+    args = parser.parse_args()
+
+
+    
+    
     client = lines_from_file('client')
     users = lines_from_file('users')
     subreddits = lines_from_file('subreddits')
+
+
+
+
+
+
+
+
 
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0],
@@ -125,4 +142,6 @@ if __name__ == '__main__':
     #     scrape_subreddit_images(reddit, sub, 10)
 
     # scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.random)
+
+    scrape_subreddit_images(reddit, args.r, args.postlimit)
 
