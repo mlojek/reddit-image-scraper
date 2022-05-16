@@ -1,10 +1,18 @@
 import praw
 import requests
 import os
+from enum import IntEnum
 
 
 POST_LIMIT = 100
 EXTENSIONS = ['png', 'jpg', 'gif', 'jpeg', 'mp4']
+
+
+class Sort(IntEnum):
+    hot = 0
+    new = 1
+    top = 2
+    random = 3
 
 
 def lines_from_file(filepath: str) -> list:
@@ -21,12 +29,25 @@ def lines_from_file(filepath: str) -> list:
     return result
 
 
-def scrape_subreddit_images(reddit, sub_name: str, post_limit: int) -> None:
+def get_subreddit_submissions(reddit, sub_name: str, post_limit: int, sort: int = Sort.hot) -> list:
+    if sort == Sort.hot:
+        return reddit.subreddit(sub_name).hot(limit=post_limit)
+    elif sort == Sort.new:
+        return reddit.subreddit(sub_name).new(limit=post_limit)
+    elif sort == Sort.top:
+        return reddit.subreddit(sub_name).top(limit=post_limit)
+    elif sort == Sort.random:
+        return [reddit.subreddit(sub_name).random() for _ in range(post_limit)]
+    else:
+        return reddit.subreddit(sub_name).hot(limit=post_limit)
+
+
+def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort: int = Sort.hot) -> None:
     # Create subdirecotry:
     if sub_name not in os.listdir('images'):
         os.mkdir(f'images/{sub_name}')
 
-    for submission in reddit.subreddit(sub_name).hot(limit=post_limit):
+    for submission in get_subreddit_submissions(reddit, sub_name, post_limit, sort):
         # Check if the media is in a supported format:
         extension = submission.url.rsplit('.')[-1]
         if extension not in EXTENSIONS:
@@ -91,4 +112,6 @@ if __name__ == '__main__':
 
     # for sub in subreddits:
     #     scrape_subreddit_images(reddit, sub, 10)
+
+    scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.top)
 
