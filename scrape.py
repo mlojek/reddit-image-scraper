@@ -116,6 +116,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Reddit image downloader")
     parser.add_argument('-r', type=str, help='subreddit to scrape')
     parser.add_argument('-R', type=str, help='file containing names of subreddits to scrape')
+    parser.add_argument('-u', type=str, help='user to scrape')
+    parser.add_argument('-U', type=str, help='file containing names of users to scrape')
     parser.add_argument('postlimit', type=int, help='how many posts to process')
     args = parser.parse_args()
 
@@ -150,3 +152,9 @@ if __name__ == '__main__':
         for sub in lines_from_file(args.R):
             scrape_subreddit_images(reddit, sub, args.postlimit)
 
+    if args.u:
+        scrape_user_images(reddit, args.u, args.postlimit)
+    
+    if args.U:
+        for user in lines_from_file(args.U):
+            scrape_user_images(reddit, user, args.postlimit)
