@@ -1,8 +1,9 @@
 import os
-import praw
-import requests
 import argparse
 from enum import IntEnum
+
+import praw
+import requests
 
 
 POST_LIMIT = 100
