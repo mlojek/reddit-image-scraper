@@ -71,12 +71,23 @@ def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort: int = 
     print(f'subreddit {sub_name}\t\tDONE')
 
 
-def scrape_user_images(reddit, user_name: str, post_limit: int) -> None:
+def get_user_submissions(reddit, user_name: str, post_limit: int, sort: int = Sort.hot) -> list:
+    if sort == Sort.hot:
+        return reddit.redditor(user_name).submissions.hot(limit=post_limit)
+    elif sort == Sort.new:
+        return reddit.redditor(user_name).submissions.new(limit=post_limit)
+    elif sort == Sort.top:
+        return reddit.redditor(user_name).submissions.top(limit=post_limit)
+    else:
+        return reddit.redditor(user_name).submissions.hot(limit=post_limit)
+
+
+def scrape_user_images(reddit, user_name: str, post_limit: int, sort: int = Sort.hot) -> None:
     # Create subdirecotry:
     if user_name not in os.listdir('images'):
         os.mkdir(f'images/{user_name}')
 
-    for submission in reddit.redditor(user_name).submissions.hot(limit=post_limit):
+    for submission in get_user_submissions(reddit, user_name, post_limit, sort):
         # Check if the media is in a supported format:
         extension = submission.url.rsplit('.')[-1]
         if extension not in EXTENSIONS:
@@ -113,5 +124,5 @@ if __name__ == '__main__':
     # for sub in subreddits:
     #     scrape_subreddit_images(reddit, sub, 10)
 
-    scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.top)
+    # scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.random)
 
