@@ -123,28 +123,15 @@ if __name__ == '__main__':
     parser.add_argument('postlimit', type=int, help='how many posts to process')
     args = parser.parse_args()
 
-
-    
-    
+    # Get client credentials:
     client = lines_from_file('client')
-    users = lines_from_file('users')
-    subreddits = lines_from_file('subreddits')
-
-
-
-
-
-
-
-
 
     # Create a new Reddit instance:
     reddit = praw.Reddit(client_id=client[0],
                          client_secret=client[1],
                          user_agent=client[2])
 
-
-
+    # Select the sorting criterium:
     sort = Sort.hot
     if args.s:
         if args.s == 'new':
@@ -154,16 +141,17 @@ if __name__ == '__main__':
         elif args.s == 'random':
             sort = Sort.random
 
+    # Get to work:
     if args.r:
         scrape_subreddit_images(reddit, args.r, args.postlimit, sort)
-    
+
     if args.R:
         for sub in lines_from_file(args.R):
             scrape_subreddit_images(reddit, sub, args.postlimit, sort)
 
     if args.u:
         scrape_user_images(reddit, args.u, args.postlimit, sort)
-    
+
     if args.U:
         for user in lines_from_file(args.U):
             scrape_user_images(reddit, user, args.postlimit, sort)
