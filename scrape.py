@@ -143,12 +143,16 @@ if __name__ == '__main__':
                          client_secret=client[1],
                          user_agent=client[2])
 
-    # for sub in subreddits:
-    
+
+
     sort = Sort.hot
-    
-
-
+    if args.s:
+        if args.s == 'new':
+            sort = Sort.new
+        elif args.s == 'top':
+            sort = Sort.top
+        elif args.s == 'random':
+            sort = Sort.random
 
     if args.r:
         scrape_subreddit_images(reddit, args.r, args.postlimit)
