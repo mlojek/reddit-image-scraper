@@ -155,15 +155,15 @@ if __name__ == '__main__':
             sort = Sort.random
 
     if args.r:
-        scrape_subreddit_images(reddit, args.r, args.postlimit)
+        scrape_subreddit_images(reddit, args.r, args.postlimit, sort)
     
     if args.R:
         for sub in lines_from_file(args.R):
-            scrape_subreddit_images(reddit, sub, args.postlimit)
+            scrape_subreddit_images(reddit, sub, args.postlimit, sort)
 
     if args.u:
-        scrape_user_images(reddit, args.u, args.postlimit)
+        scrape_user_images(reddit, args.u, args.postlimit, sort)
     
     if args.U:
         for user in lines_from_file(args.U):
-            scrape_user_images(reddit, user, args.postlimit)
+            scrape_user_images(reddit, user, args.postlimit, sort)
