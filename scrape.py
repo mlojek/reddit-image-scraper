@@ -21,26 +21,33 @@ def lines_from_file(filepath: str) -> list:
     return result
 
 
-def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort=1) -> None:
-    # Make a subdirectory for the images:
+def scrape_subreddit_images(reddit, sub_name: str, post_limit: int) -> None:
+    # Create subdirecotry:
     if sub_name not in os.listdir('images'):
         os.mkdir(f'images/{sub_name}')
 
-    # Get the submissions (posts) and save images:
     for submission in reddit.subreddit(sub_name).hot(limit=post_limit):
-        print(submission.url)
+        # Check if the media is in a supported format:
+        extension = submission.url.rsplit('.')[-1]
+        if extension not in EXTENSIONS:
+            continue
 
-        try:
-            extension = submission.url.rsplit('.')[-1]
-            file_path = f'images/{sub_name}/'
-            file_name = f'{submission.id}_{submission.author.name}.{extension}'
+        # Prepare file path and name:
+        author_name = submission.author.name
+        file_path = f'images/{sub_name}/'
+        file_name = f'{submission.id}_{sub_name}_{author_name}.{extension}'
 
-            # Save to file:
-            response = requests.get(submission.url)
-            with open(file_path + file_name, "wb") as file:
-                file.write(response.content)
-        except FileNotFoundError:
-            pass
+        # If file already exists, skip
+        if file_name in os.listdir(file_path):
+            continue
+
+        # Download the image and save it:
+        response = requests.get(submission.url)
+        with open(file_path + file_name, "wb") as file:
+            file.write(response.content)
+
+    # Print prompt:
+    print(f'subreddit {sub_name}\t\tDONE')
 
 
 if __name__ == '__main__':
@@ -53,30 +60,11 @@ if __name__ == '__main__':
                          client_secret=client[1],
                          user_agent=client[2])
 
-    scrape_subreddit_images(reddit, 'memes', 100)
-
-    # for sub in subreddits:
-    #     # Make a subdirectory for the images:
-    #     if sub not in os.listdir('images'):
-    #         os.mkdir(f'images/{sub}')
-
-    #     # Get the submissions (posts) and save images:
-    #     for submission in reddit.subreddit(sub).hot(limit=POST_LIMIT):
-    #         print(submission.url)
-
-    #         try:
-    #             extension = submission.url.rsplit('.')[-1]
-    #             file_path = f'images/{sub}/'
-    #             file_name = f'{submission.id}_{submission.author.name}.{extension}'
-
-    #             # Save to file:
-    #             response = requests.get(submission.url)
-    #             with open(file_path + file_name, "wb") as file:
-    #                 file.write(response.content)
-    #         except FileNotFoundError:
-    #             pass
+    for sub in subreddits:
+        scrape_subreddit_images(reddit, sub, 10)
 
     # for user in users:
+    #     print("User: ", user, '='*40)
     #     # Make a subdirectory for the images:
     #     if user not in os.listdir('images'):
     #         os.mkdir(f'images/{user}')
