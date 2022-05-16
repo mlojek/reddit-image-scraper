@@ -115,11 +115,11 @@ def scrape_user_images(reddit, user_name: str, post_limit: int, sort: int = Sort
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Reddit image downloader")
-    parser.add_argument('-r', type=str, help='subreddit to scrape')
-    parser.add_argument('-R', type=str, help='file containing names of subreddits to scrape')
-    parser.add_argument('-u', type=str, help='user to scrape')
-    parser.add_argument('-U', type=str, help='file containing names of users to scrape')
-    parser.add_argument('-s', type=str, help='sorting criterium: hot/top/new/random')
+    parser.add_argument('-r', '--subreddit', type=str, help='subreddit to scrape')
+    parser.add_argument('-R', '--subreddits-file', type=str, help='file containing names of subreddits to scrape')
+    parser.add_argument('-u', '--user', type=str, help='user to scrape')
+    parser.add_argument('-U', '--users-file', type=str, help='file containing names of users to scrape')
+    parser.add_argument('-s', '--sort-crit', type=str, help='sorting criterium: hot/top/new/random')
     parser.add_argument('postlimit', type=int, help='how many posts to process')
     args = parser.parse_args()
 
@@ -133,25 +133,25 @@ if __name__ == '__main__':
 
     # Select the sorting criterium:
     sort = Sort.hot
-    if args.s:
-        if args.s == 'new':
+    if args.sort_crit:
+        if args.sort_crit == 'new':
             sort = Sort.new
-        elif args.s == 'top':
+        elif args.sort_crit == 'top':
             sort = Sort.top
-        elif args.s == 'random':
+        elif args.sort_crit == 'random':
             sort = Sort.random
 
     # Get to work:
-    if args.r:
-        scrape_subreddit_images(reddit, args.r, args.postlimit, sort)
+    if args.subreddit:
+        scrape_subreddit_images(reddit, args.subreddit, args.postlimit, sort)
 
-    if args.R:
-        for sub in lines_from_file(args.R):
+    if args.subreddits_file:
+        for sub in lines_from_file(args.subreddits_file):
             scrape_subreddit_images(reddit, sub, args.postlimit, sort)
 
-    if args.u:
-        scrape_user_images(reddit, args.u, args.postlimit, sort)
+    if args.user:
+        scrape_user_images(reddit, args.user, args.postlimit, sort)
 
-    if args.U:
-        for user in lines_from_file(args.U):
+    if args.users_file:
+        for user in lines_from_file(args.users_file):
             scrape_user_images(reddit, user, args.postlimit, sort)
