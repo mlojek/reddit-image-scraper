@@ -10,3 +10,8 @@ https://towardsdatascience.com/scraping-reddit-data-1c0af3040768
 ### subreddits and users
 names of subreddits (without r/) each in a separate line
 same goes for users
+
+### images
+jpg, jpeg, png, gif, mp4  
+  
+`image-name.sub-name.author-name.extension`
