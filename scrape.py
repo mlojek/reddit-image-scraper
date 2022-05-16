@@ -57,7 +57,7 @@ def scrape_subreddit_images(reddit, sub_name: str, post_limit: int, sort: int = 
         # Prepare file path and name:
         author_name = submission.author.name
         file_path = f'images/{sub_name}/'
-        file_name = f'{submission.id}_{sub_name}_{author_name}.{extension}'
+        file_name = f'{submission.id}.{sub_name}.{author_name}.{extension}'
 
         # If file already exists, skip
         if file_name in os.listdir(file_path):
@@ -97,7 +97,7 @@ def scrape_user_images(reddit, user_name: str, post_limit: int, sort: int = Sort
         # Prepare file path and name:
         sub_name = submission.subreddit.display_name
         file_path = f'images/{user_name}/'
-        file_name = f'{submission.id}_{sub_name}_{user_name}.{extension}'
+        file_name = f'{submission.id}.{sub_name}.{user_name}.{extension}'
 
         # If file already exists, skip
         if file_name in os.listdir(file_path):
