@@ -114,7 +114,8 @@ def scrape_user_images(reddit, user_name: str, post_limit: int, sort: int = Sort
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Reddit image downloader")
-    parser.add_argument('-r', type=str, help='scrape images from a given subreddit')
+    parser.add_argument('-r', type=str, help='subreddit to scrape')
+    parser.add_argument('-R', type=str, help='file containing names of subreddits to scrape')
     parser.add_argument('postlimit', type=int, help='how many posts to process')
     args = parser.parse_args()
 
@@ -142,6 +143,10 @@ if __name__ == '__main__':
     #     scrape_subreddit_images(reddit, sub, 10)
 
     # scrape_subreddit_images(reddit, 'memes', 10, sort=Sort.random)
-
-    scrape_subreddit_images(reddit, args.r, args.postlimit)
+    if args.r:
+        scrape_subreddit_images(reddit, args.r, args.postlimit)
+    
+    if args.R:
+        for sub in lines_from_file(args.R):
+            scrape_subreddit_images(reddit, sub, args.postlimit)
 
